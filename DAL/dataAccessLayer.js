@@ -25,7 +25,7 @@ const getAllBudget = (req, res) => {
 
 // Get one
 const getOneBudget = (req, res) => {
-  id = req.params.budgetId;
+  id = req.params.id;
   Budget.findById(id)
     .exec()
     .then(result => {
@@ -42,4 +42,22 @@ const getOneBudget = (req, res) => {
     });
 };
 
-module.exports = { getAllBudget, getOneBudget };
+const addBudget = (req, res) => {
+  const budget = new Budget({
+    name: req.body.name,
+    type: req.body.type,
+    amount: req.body.amount
+  });
+  budget
+    .save()
+    .then(result => {
+      res
+        .status(200)
+        .json({ message: "successfully added budget", newBudget: result });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+};
+
+module.exports = { getAllBudget, getOneBudget, addBudget };
