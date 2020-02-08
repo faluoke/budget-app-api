@@ -33,7 +33,7 @@ const getOneBudget = (req, res) => {
         console.log(result);
         res.status(200).json(result);
       } else {
-        res.status(404).json({ message: "cannot find budget" });
+        res.status(404).json({ message: "Cannot find budget item" });
       }
     })
     .catch(err => {
@@ -42,6 +42,7 @@ const getOneBudget = (req, res) => {
     });
 };
 
+// Add budget
 const addBudget = (req, res) => {
   const budget = new Budget({
     name: req.body.name,
@@ -53,11 +54,51 @@ const addBudget = (req, res) => {
     .then(result => {
       res
         .status(200)
-        .json({ message: "successfully added budget", newBudget: result });
+        .json({ message: "Successfully added budget item", newBudget: result });
     })
     .catch(err => {
       res.status(500).json(err);
     });
 };
 
-module.exports = { getAllBudget, getOneBudget, addBudget };
+// Update budget
+const updateBudget = (req, res) => {
+  id = req.params.id;
+  Budget.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+    .then(result => {
+      res.status(200).json({
+        message: "Successfully updated budget item",
+        updatedBudget: result
+      });
+    })
+    .catch(err => {
+      res.status(500).json(err);
+    });
+};
+
+// Delete budget
+const deleteBudget = (req, res) => {
+  id = req.params.id;
+  Budget.findByIdAndDelete(id)
+    .then(result => {
+      if (result) {
+        res.status(200).json({
+          message: "Successfully deleted budget item",
+          deletedBudget: result
+        });
+      } else {
+        res.status(404).json({ message: "budget item not found" });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+};
+
+module.exports = {
+  getAllBudget,
+  getOneBudget,
+  addBudget,
+  updateBudget,
+  deleteBudget
+};
