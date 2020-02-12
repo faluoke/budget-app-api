@@ -53,7 +53,7 @@ const addBudget = (req, res) => {
     .save()
     .then(result => {
       res
-        .status(200)
+        .status(201)
         .json({ message: "Successfully added budget item", newBudget: result });
     })
     .catch(err => {
