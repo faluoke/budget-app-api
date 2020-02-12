@@ -47,7 +47,8 @@ const addBudget = (req, res) => {
   const budget = new Budget({
     name: req.body.name,
     type: req.body.type,
-    amount: req.body.amount
+    planned: req.body.planned,
+    received: req.body.received
   });
   budget
     .save()
