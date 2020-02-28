@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Budget = require("../model/budget");
+const Transaction = require("../model/transaction");
 require("dotenv").config();
 
 mongoose
@@ -12,9 +12,11 @@ mongoose
     console.log(err);
   });
 
+//Transactions
+
 // Get all
-const getAllBudget = (req, res) => {
-  Budget.find({}, (err, posts) => {
+const getAllTransactions = (req, res) => {
+  Transaction.find({}, (err, posts) => {
     if (err) {
       console.log(err);
       res.status(500).json(err);
@@ -24,16 +26,16 @@ const getAllBudget = (req, res) => {
 };
 
 // Get one
-const getOneBudget = (req, res) => {
+const getOneTransaction = (req, res) => {
   id = req.params.id;
-  Budget.findById(id)
+  Transaction.findById(id)
     .exec()
     .then(result => {
       if (result) {
         console.log(result);
         res.status(200).json(result);
       } else {
-        res.status(404).json({ message: "Cannot find budget item" });
+        res.status(404).json({ message: "Cannot find transaction item" });
       }
     })
     .catch(err => {
@@ -43,19 +45,20 @@ const getOneBudget = (req, res) => {
 };
 
 // Add budget
-const addBudget = (req, res) => {
-  const budget = new Budget({
-    name: req.body.name,
+const addTransaction = (req, res) => {
+  const transaction = new Transaction({
     type: req.body.type,
-    planned: req.body.planned,
-    received: req.body.received
+    amount: req.body.amount,
+    date: req.body.date,
+    name: req.body.name
   });
-  budget
+  transaction
     .save()
     .then(result => {
-      res
-        .status(201)
-        .json({ message: "Successfully added budget item", newBudget: result });
+      res.status(201).json({
+        message: "Successfully added transaction item",
+        newTransaction: result
+      });
     })
     .catch(err => {
       res.status(500).json(err);
@@ -63,9 +66,9 @@ const addBudget = (req, res) => {
 };
 
 // Update budget
-const updateBudget = (req, res) => {
+const updateTransaction = (req, res) => {
   id = req.params.id;
-  Budget.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Transaction.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(result => {
       res.status(200).json({
         message: "Successfully updated budget item",
@@ -78,9 +81,9 @@ const updateBudget = (req, res) => {
 };
 
 // Delete budget
-const deleteBudget = (req, res) => {
+const deleteTransaction = (req, res) => {
   id = req.params.id;
-  Budget.findByIdAndDelete(id)
+  Transaction.findByIdAndDelete(id)
     .then(result => {
       if (result) {
         res.status(200).json({
@@ -97,9 +100,9 @@ const deleteBudget = (req, res) => {
 };
 
 module.exports = {
-  getAllBudget,
-  getOneBudget,
-  addBudget,
-  updateBudget,
-  deleteBudget
+  getAllTransactions,
+  getOneTransaction,
+  addTransaction,
+  updateTransaction,
+  deleteTransaction
 };

@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-const DAL = require("../DAL/dataAccessLayer");
+const DAL = require("../DAL/budgetController");
 
 // GET budgets
 router.get("/budgets", (req, res) => {
