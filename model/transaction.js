@@ -4,7 +4,8 @@ const transactionSchema = new mongoose.Schema({
   type: { type: String, required: true },
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now() },
-  name: { type: String, required: true }
+  name: { type: String, required: true },
+  budgetId: { type: String, required: true }
 });
 
 module.exports = mongoose.model("Transaction", transactionSchema);

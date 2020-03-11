@@ -50,7 +50,8 @@ const addTransaction = (req, res) => {
     type: req.body.type,
     amount: req.body.amount,
     date: req.body.date,
-    name: req.body.name
+    name: req.body.name,
+    budgetId: req.body.budgetId
   });
   transaction
     .save()
