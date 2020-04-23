@@ -1,16 +1,4 @@
-const mongoose = require("mongoose");
 const Transaction = require("../model/transaction");
-require("dotenv").config();
-
-mongoose
-  .connect(process.env.MONGODB_CONNECT, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(console.log("Successfully connected to database"))
-  .catch(err => {
-    console.log(err);
-  });
 
 //Transactions
 
@@ -30,7 +18,7 @@ const getOneTransaction = (req, res) => {
   id = req.params.id;
   Transaction.findById(id)
     .exec()
-    .then(result => {
+    .then((result) => {
       if (result) {
         console.log(result);
         res.status(200).json(result);
@@ -38,7 +26,7 @@ const getOneTransaction = (req, res) => {
         res.status(404).json({ message: "Cannot find transaction item" });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.status(500).json(err);
     });
@@ -51,17 +39,17 @@ const addTransaction = (req, res) => {
     amount: req.body.amount,
     date: req.body.date,
     name: req.body.name,
-    budgetId: req.body.budgetId
+    budgetId: req.body.budgetId,
   });
   transaction
     .save()
-    .then(result => {
+    .then((result) => {
       res.status(201).json({
         message: "Successfully added transaction item",
-        newTransaction: result
+        newTransaction: result,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json(err);
     });
 };
@@ -70,13 +58,13 @@ const addTransaction = (req, res) => {
 const updateTransaction = (req, res) => {
   id = req.params.id;
   Transaction.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         message: "Successfully updated budget item",
-        updatedBudget: result
+        updatedBudget: result,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json(err);
     });
 };
@@ -85,17 +73,17 @@ const updateTransaction = (req, res) => {
 const deleteTransaction = (req, res) => {
   id = req.params.id;
   Transaction.findByIdAndDelete(id)
-    .then(result => {
+    .then((result) => {
       if (result) {
         res.status(200).json({
           message: "Successfully deleted budget item",
-          deletedBudget: result
+          deletedBudget: result,
         });
       } else {
         res.status(404).json({ message: "budget item not found" });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ error: err });
     });
 };
@@ -105,5 +93,5 @@ module.exports = {
   getOneTransaction,
   addTransaction,
   updateTransaction,
-  deleteTransaction
+  deleteTransaction,
 };

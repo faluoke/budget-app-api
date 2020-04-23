@@ -1,16 +1,4 @@
-const mongoose = require("mongoose");
 const Budget = require("../model/budget");
-require("dotenv").config();
-
-mongoose
-  .connect(process.env.MONGODB_CONNECT, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then()
-  .catch(err => {
-    console.log(err);
-  });
 
 // Budgets
 
@@ -30,7 +18,7 @@ const getOneBudget = (req, res) => {
   id = req.params.id;
   Budget.findById(id)
     .exec()
-    .then(result => {
+    .then((result) => {
       if (result) {
         console.log(result);
         res.status(200).json(result);
@@ -38,7 +26,7 @@ const getOneBudget = (req, res) => {
         res.status(404).json({ message: "Cannot find budget item" });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       res.status(500).json(err);
     });
@@ -50,16 +38,16 @@ const addBudget = (req, res) => {
     name: req.body.name,
     type: req.body.type,
     planned: req.body.planned,
-    received: req.body.received
+    received: req.body.received,
   });
   budget
     .save()
-    .then(result => {
+    .then((result) => {
       res
         .status(201)
         .json({ message: "Successfully added budget item", newBudget: result });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json(err);
     });
 };
@@ -68,13 +56,13 @@ const addBudget = (req, res) => {
 const updateBudget = (req, res) => {
   id = req.params.id;
   Budget.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(result => {
+    .then((result) => {
       res.status(200).json({
         message: "Successfully updated budget item",
-        updatedBudget: result
+        updatedBudget: result,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json(err);
     });
 };
@@ -83,17 +71,17 @@ const updateBudget = (req, res) => {
 const deleteBudget = (req, res) => {
   id = req.params.id;
   Budget.findByIdAndDelete(id)
-    .then(result => {
+    .then((result) => {
       if (result) {
         res.status(200).json({
           message: "Successfully deleted budget item",
-          deletedBudget: result
+          deletedBudget: result,
         });
       } else {
         res.status(404).json({ message: "budget item not found" });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ error: err });
     });
 };
@@ -103,5 +91,5 @@ module.exports = {
   getOneBudget,
   addBudget,
   updateBudget,
-  deleteBudget
+  deleteBudget,
 };
