@@ -39,7 +39,6 @@ const addBudget = (req, res) => {
     type: req.body.type,
     planned: req.body.planned,
     received: req.body.received,
-    userId: req.body.userId,
   });
   budget
     .save()
