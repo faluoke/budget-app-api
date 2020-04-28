@@ -36,7 +36,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-app.use("/api", budgetRouter, transactionRouter, userRouter);
+app.use("/auth", userRouter);
+app.use(
+  "/api",
+  require("./middlewares/verifyToken"),
+  budgetRouter,
+  transactionRouter
+);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

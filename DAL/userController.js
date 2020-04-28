@@ -32,26 +32,37 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { error } = validation.validateLogin(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json({ message: error.details[0].message });
 
   const user = await User.findOne({ email: req.body.email });
   if (!user)
     return res
-      .status(400)
+      .status(401)
       .json({ message: "Email or password does not match" });
 
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass)
     return res
-      .status(400)
+      .status(401)
       .json({ message: "Email or password does not match" });
 
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET, {
+    expiresIn: "600s",
+  });
   res.header("auth-token", token);
 
   res.status(200).json({
     message: `${user.firstName} ${user.lastName} is logged in successfully`,
+    token: token,
+    email: req.body.email,
   });
 };
 
-module.exports = { registerUser, loginUser };
+const getAuthStatus = (req, res) => {
+  res.status(200).json({
+    message: "Successfully Authenticated",
+    authenticated: true,
+  });
+};
+
+module.exports = { registerUser, loginUser, getAuthStatus };

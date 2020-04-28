@@ -1,10 +1,10 @@
 const Budget = require("../model/budget");
-
+const Transaction = require("../model/transaction");
 // Budgets
 
 // Get all
 const getAllBudget = (req, res) => {
-  Budget.find({}, (err, posts) => {
+  Budget.find({ userId: req.header("user-id") }, (err, posts) => {
     if (err) {
       console.log(err);
       res.status(500).json(err);
@@ -69,22 +69,28 @@ const updateBudget = (req, res) => {
 };
 
 // Delete budget
-const deleteBudget = (req, res) => {
+const deleteBudget = async (req, res) => {
   id = req.params.id;
-  Budget.findByIdAndDelete(id)
-    .then((result) => {
-      if (result) {
-        res.status(200).json({
-          message: "Successfully deleted budget item",
-          deletedBudget: result,
-        });
-      } else {
-        res.status(404).json({ message: "budget item not found" });
-      }
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err });
+  transactions = await Transaction.find({
+    budgetId: id,
+  });
+  transactionIds = transactions.map((transaction) => {
+    return transaction._id;
+  });
+  try {
+    await Transaction.deleteMany({
+      _id: {
+        $in: transactionIds,
+      },
     });
+    result = await Budget.findByIdAndDelete(id);
+    res.status(200).json({
+      message: "Successfully deleted budget item and transactions associated.",
+      budgetItem: result,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
 };
 
 module.exports = {
