@@ -10,4 +10,8 @@ router.post("/login", (req, res) => {
   DAL.loginUser(req, res);
 });
 
+router.get("/", require("../middlewares/verifyToken"), (req, res) => {
+  DAL.getAuthStatus(req, res);
+});
+
 module.exports = router;

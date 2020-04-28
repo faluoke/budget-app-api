@@ -1,16 +1,29 @@
 const Transaction = require("../model/transaction");
+const Budget = require("../model/budget");
 
 //Transactions
 
 // Get all
-const getAllTransactions = (req, res) => {
-  Transaction.find({}, (err, posts) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json(err);
-    }
-    res.status(200).json(posts);
+const getAllTransactions = async (req, res) => {
+  budgets = await Budget.find({ userId: req.header("user-id") });
+  budgetId = budgets.map((budget) => {
+    return budget._id;
   });
+
+  Transaction.find(
+    {
+      budgetId: {
+        $in: budgetId,
+      },
+    },
+    (err, posts) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json(err);
+      }
+      res.status(200).json(posts);
+    }
+  );
 };
 
 // Get one
